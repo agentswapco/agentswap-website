@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+  Static chains and DEXes page for the AgentSwap website.
+  Exports the docs content with embedded nav/footer and relative links.
+  Depends on ../css/style.css plus root-level static assets.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-agent-optimized DEX aggregator">
+    <title>Chains and DEXes | AgentSwap</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <nav class="site-nav">
+        <div class="site-nav-inner">
+          <a class="site-brand" href="/">AgentSwap</a>
+          <span class="text-dim">|</span>
+          <a href="api">api</a>
+          <a href="cli">cli</a>
+          <a href="chains">chains</a>
+          <span class="text-dim">|</span>
+          <a class="text-green" href="http://app.agentswap.co/">launch app &rarr;</a>
+        </div>
+      </nav>
+      <main>
+        <div class="docs-path">docs/chains-and-dexes</div>
+        <h1 class="page-title"># Chains and DEXes</h1>
+
+        <div class="block mb-6">
+          <div class="block-title">## Ethereum (chain_id: 1) &mdash; 14 DEXes</div>
+<pre>DEX                    TYPE           POOLS
+UniswapV2              AMM            dynamic
+SushiswapV2            AMM            dynamic
+UniswapV3              Concentrated   dynamic
+UniswapV4              Hooks          dynamic
+SushiswapV3            Concentrated   dynamic
+PancakeswapV3          Concentrated   dynamic
+Curve                  StableSwap     dynamic
+Curve Tricrypto        Tri-asset      dynamic
+Curve TwoCrypto        Two-asset      dynamic
+BalancerV2             Weighted       dynamic
+BalancerV3             Weighted       dynamic
+Maverick V2            Directional    dynamic
+WOOFi                  sPMM Oracle    dynamic
+Fluid DEX              Dual Pool      dynamic</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Base (chain_id: 8453) &mdash; 29 DEXes</div>
+<pre>DEX                    TYPE           POOLS
+UniswapV2              AMM            ~1500
+UniswapV3              Concentrated   ~3000
+UniswapV4              Hooks          ~200
+AerodromeV2            Ve(3,3)        ~800
+Aerodrome Slipstream   Concentrated   ~500
+PancakeswapV2          AMM            ~300
+PancakeswapV3          Concentrated   ~400
+PCS Infinity CL        Concentrated   ~50
+BaseSwapV2             AMM            ~200
+BaseSwapV3             Concentrated   ~100
+SushiswapV3            Concentrated   ~300
+AlienBaseV3            Concentrated   ~100
+DackieSwapV3           Concentrated   ~80
+SwapBasedV2            AMM            ~150
+SwapBasedV3            Concentrated   ~60
+RocketSwap             AMM            ~37K
+HydrexIntegral         Algebra V4     ~30
+Curve                  StableSwap     ~50
+Curve TwoCrypto        Two-asset      ~20
+BalancerV2             Weighted       ~30
+TraderJoe LB           Liquidity Book ~100
+Fluid DEX              Dual Pool      ~20
+Maverick V2            Directional    ~30
+WOOFi                  sPMM Oracle    ~10
+BalancerV3             Weighted       ~20
+Solidly V3             Concentrated   ~40
+<span class="value">Wasabi*                PropSwap       ~5</span>
+<span class="value">ElfomoFi*              Cap-sampled    ~5</span>
+<span class="value">Beethoven X*           Multi-vault    ~15</span>
+
+<span class="comment">* coming soon — integrated but not yet enabled in production</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Arbitrum (chain_id: 42161) &mdash; 20 DEXes</div>
+<pre>DEX                    TYPE           POOLS
+UniswapV2              AMM            ~500
+UniswapV3              Concentrated   ~2000
+UniswapV4              Hooks          ~100
+PancakeswapV3          Concentrated   ~300
+SushiswapV3            Concentrated   ~400
+CamelotV2              AMM            ~600
+CamelotV3              Algebra        ~200
+QuickSwapV4            Algebra V4     ~50
+Zyberswap              Algebra        ~30
+ChronosV2              AMM            ~40
+Curve                  StableSwap     ~40
+Curve Tricrypto        Tri-asset      ~10
+BalancerV2             Weighted       ~50
+TraderJoe LB           Liquidity Book ~80
+DODO                   PMM            ~30
+Maverick V2            Directional    ~40
+MIM Swap               MagicLP        ~15
+WOOFi                  sPMM Oracle    ~10
+Fluid DEX              Dual Pool      ~10
+Swaap V2               Oracle AMM     ~20</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Pool Grading</div>
+<pre>GRADE  DESCRIPTION
+<span class="success">A</span>      High liquidity, accurate quotes, heavily traded
+<span class="success">B</span>      Good liquidity, reliable quotes
+<span class="value">C</span>      Moderate liquidity, usable for smaller trades
+<span class="value">D</span>      Low liquidity, may have high price impact
+<span class="error">E</span>      Very low liquidity, probe-only (not used in direct routing)
+<span class="error">F</span>      Dead or unreliable, excluded from all routing
+
+<span class="comment">All pool types graded: V2, V3, V4, and exotic (Curve, Balancer, DODO, LB, etc.)</span>
+<span class="comment">Ungraded pools are excluded by default. 50% price impact circuit breaker on all routes.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Supported Tokens</div>
+<pre>AgentSwap supports <span class="success">any ERC-20 token</span> with on-chain liquidity across the
+indexed DEXes. Tokens are discovered automatically via factory event
+scanning and graded by pool quality (A-F).
+
+<span class="comment">Counts (approximate):</span>
+  Ethereum  : ~2,000 tokens across 14 DEXes
+  Base      : ~5,000 tokens across 29 DEXes
+  Arbitrum  : ~3,000 tokens across 20 DEXes
+
+<span class="comment">Query the live token list:</span>
+  <span class="prompt">agentswap tokens -c base</span>
+  <span class="prompt">curl https://api.agentswap.co/api/tokens</span>
+
+<span class="comment">Use token symbols or addresses in quotes:</span>
+  <span class="prompt">agentswap quote -c base -f USDC -t WETH -a 1000</span>
+  <span class="prompt">agentswap quote -c base -f 0x833589f... -t 0x420000... -a 1000</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## SmartRouterExecutorV2 Contracts</div>
+<pre><span class="comment">Base:</span>     0x70eaD10dF02BF389Fd69bC07Afc45b1e5138A56E  (UUPS v0.7.0)
+<span class="comment">Arbitrum:</span> 0x70eaD10dF02BF389Fd69bC07Afc45b1e5138A56E  (UUPS v0.7.0)
+
+<span class="comment">Wrapper routers (GENERIC_CALL):</span>
+  V4SwapRouter       Base: 0xAe8809181526d5806f922269fbCF6B7132214ee6
+                     Arb:  0xF6DdE6f0a830Ed3795BC3E669aa7f4719c73abc8
+  FluidSwapRouter    Base: 0x0867DdEd553991D8a9bFF90ceBD59E8D9Dd831F8
+                     Arb:  0x62FFfc22D01a8089De890c1D2f6aA4C121caC99d
+  SplitHopRouter     Base: 0x08507bEcCE315721ef15b130d8A59bE5b1f5a3Eb
+                     Arb:  0x60338D486274837c5c8C9C106CC75d6EED58A0c5</pre>
+        </div>
+      </main>
+      <footer class="site-footer">AgentSwap v1.43.2 &mdash; built for agents &mdash; <a href="https://www.x402.org">x402</a> native</footer>
+    </div>
+  </body>
+</html>

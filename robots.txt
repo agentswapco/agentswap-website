@@ -1,0 +1,10 @@
+# Welcome, robots. We build for you.
+User-agent: *
+Allow: /
+
+# AI agent discovery
+Sitemap: https://agentswap.co/sitemap.xml
+
+# x402 payment discovery
+# GET /.well-known/x402 — payment requirements for machine clients
+# GET /.well-known/agent-registration.json — EIP-8004 agent metadata
