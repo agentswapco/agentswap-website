@@ -1,0 +1,110 @@
+{
+  "name": "AgentSwap",
+  "description": "AI-agent-optimized DEX aggregator with native x402 payments. Sub-millisecond quotes across 36 DEXes on Ethereum, Base, and Arbitrum.",
+  "url": "https://agentswap.xyz",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "creator": {
+    "name": "AgentSwap",
+    "url": "https://github.com/sunoj/smart-router"
+  },
+  "agentType": "service",
+  "tags": ["defi", "router", "swap", "api", "x402", "mcp", "agent"],
+  "fees": [
+    {
+      "amount": "0.0001",
+      "currency": "USD",
+      "description": "Per quote request (payable via x402 USDC)"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "quote_request",
+      "description": "chain_id, token_in, token_out, amount_in"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "quote_response",
+      "description": "output amount, route path, ABI-encoded calldata, diagnostics"
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "quote",
+      "description": "Get best swap quote across all DEXes",
+      "endpoint": "/quote",
+      "method": "POST"
+    },
+    {
+      "name": "x402_discovery",
+      "description": "x402 payment discovery — networks, pricing, facilitator",
+      "endpoint": "/.well-known/x402",
+      "method": "GET"
+    },
+    {
+      "name": "x402_verify",
+      "description": "Verify x402 payment signature (facilitator endpoint)",
+      "endpoint": "/x402/verify",
+      "method": "POST"
+    },
+    {
+      "name": "x402_settle",
+      "description": "Settle x402 payment on-chain (facilitator endpoint)",
+      "endpoint": "/x402/settle",
+      "method": "POST"
+    },
+    {
+      "name": "health",
+      "description": "Service health: pools, sync status, memory",
+      "endpoint": "/health",
+      "method": "GET"
+    },
+    {
+      "name": "tokens",
+      "description": "Token registry: address, symbol, decimals",
+      "endpoint": "/api/tokens",
+      "method": "GET"
+    }
+  ],
+  "restrictions": [
+    {
+      "name": "payment",
+      "description": "x402 PAYMENT-SIGNATURE header or X-API-Key required for /quote"
+    }
+  ],
+  "version": "1.30.10",
+  "links": {
+    "docs": "/docs/api.html",
+    "cli": "/docs/cli.html",
+    "x402": "/.well-known/x402"
+  },
+  "x402Support": true,
+  "x402": {
+    "version": 2,
+    "discovery": "/.well-known/x402",
+    "facilitator": "/x402",
+    "networks": ["eip155:8453", "eip155:42161"],
+    "schemes": ["exact"],
+    "asset": "USDC"
+  },
+  "securitySchemes": [
+    {
+      "type": "x402",
+      "description": "x402 v2 payment protocol — sign EIP-3009 transferWithAuthorization"
+    },
+    {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header",
+      "description": "Legacy API key auth (EIP-191 registration)"
+    }
+  ],
+  "supportedStandards": ["EIP-8004", "x402-v2", "EIP-3009", "EIP-712"],
+  "registrations": []
+}

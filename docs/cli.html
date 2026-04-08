@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AgentSwap CLI — install and usage guide">
+    <title>CLI Guide | AgentSwap</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <nav class="site-nav">
+        <div class="site-nav-inner">
+          <a class="site-brand" href="/">AgentSwap</a>
+          <span class="text-dim">|</span>
+          <a href="api">api</a>
+          <a href="cli">cli</a>
+          <a href="chains">chains</a>
+          <span class="text-dim">|</span>
+          <a class="text-green" href="http://app.agentswap.co/">launch app &rarr;</a>
+        </div>
+      </nav>
+      <main>
+        <div class="docs-path">docs/cli-guide</div>
+        <h1 class="page-title"># CLI Guide</h1>
+
+        <p class="mb-6">The <code>agentswap</code> CLI provides terminal access to AgentSwap. Use <code>--json</code> for machine-readable output.</p>
+
+        <div class="block mb-6">
+          <div class="block-title">## Install</div>
+<pre><span class="prompt">cargo install agentswap</span>
+
+<span class="comment"># verify</span>
+<span class="prompt">agentswap --version</span>
+<span class="value">agentswap 0.1.1</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Global Flags</div>
+<pre><span class="flag">--json, -j</span>    Output raw JSON (default: formatted table)
+<span class="flag">--url, -u</span>     Service URL (default: $SR_SERVICE_URL or http://localhost:3000)
+<span class="flag">--api-key, -k</span> API key (default: $SR_API_KEY or ~/.agentswap/credentials)</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Quick Start</div>
+<pre><span class="comment"># 1) Register an API key (one-time)</span>
+<span class="prompt">agentswap register --address 0xYourWallet --key-file private-key.txt</span>
+
+<span class="comment"># 2) Get a swap quote</span>
+<span class="prompt">agentswap quote -c base -f USDC -t WETH -a 1000</span>
+
+<span class="comment"># 3) Check pricing and buy quota if needed</span>
+<span class="prompt">agentswap pricing</span>
+<span class="prompt">agentswap quota-claim -c base --tx-hash 0x...</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap quote</div>
+<pre><span class="prompt">agentswap quote <span class="flag">-c</span> <span class="value">base</span> <span class="flag">-f</span> <span class="value">USDC</span> <span class="flag">-t</span> <span class="value">WETH</span> <span class="flag">-a</span> <span class="value">1000</span></span>
+
++------------------+-----------------------------+
+| AgentSwap Quote                                 |
++------------------+-----------------------------+
+| Chain            | Base (8453)                 |
+| Input            | 1,000.00 USDC               |
+| Output           | 0.4012 WETH                 |
+| Route            | USDC&gt;[UniV3:500]&gt;WETH       |
+| Source           | local                       |
+| Price Impact     | 0.08%                       |
+| Gas Estimate     | 184,000                     |
+| Pool Grades      | A                           |
++------------------+-----------------------------+
+
+<span class="comment">Flags:</span>
+  <span class="flag">-c, --chain</span>      Chain: ethereum, base, arbitrum, 1, 8453, 42161
+  <span class="flag">-f, --from</span>       Input token (symbol or 0x address)
+  <span class="flag">-t, --to</span>         Output token
+  <span class="flag">-a, --amount</span>     Human-readable amount, or "raw:123456789"
+  <span class="flag">-s, --slippage</span>   Slippage in bps (default: 50)
+  <span class="flag">--verify</span>         Verify quote on-chain via eth_call dry-run</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap batch-quote</div>
+<pre><span class="prompt">agentswap batch-quote <span class="flag">-c</span> <span class="value">base</span> <span class="flag">-a</span> <span class="value">1000</span> USDC/WETH WETH/DAI USDC/cbBTC</span>
+
+<span class="comment">Quote multiple pairs in one call. Same amount applied to all pairs.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap register</div>
+<pre><span class="prompt">agentswap register --address 0xYourWallet --key-file private-key.txt</span>
+
+<span class="comment">Registers an API key via EIP-191 challenge/response.</span>
+<span class="comment">Key is saved to ~/.agentswap/credentials for future use.</span>
+
+<span class="comment">Options:</span>
+  <span class="flag">--address</span>       Wallet address (0x...)
+  <span class="flag">--key-file</span>      Path to file containing private key (recommended)
+  <span class="flag">--private-key</span>   Private key directly (less secure)</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap pricing</div>
+<pre><span class="prompt">agentswap pricing</span>
+
+<span class="comment">Shows x402 version, per-quote price (USD + USDC),</span>
+<span class="comment">and per-chain quota contract addresses.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap quota-claim</div>
+<pre><span class="prompt">agentswap quota-claim <span class="flag">-c</span> <span class="value">base</span> <span class="flag">--tx-hash</span> <span class="value">0x...</span></span>
+
+<span class="comment">Validates an on-chain quota purchase tx and credits quota to your API key.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap health</div>
+<pre><span class="prompt">agentswap health</span>
+
+<span class="comment">Service health: status, version, uptime, pool counts, sync lag, memory.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap chains</div>
+<pre><span class="prompt">agentswap chains</span>
+
+<span class="comment">Lists supported chains, DEX protocols, and pool counts.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap tokens</div>
+<pre><span class="prompt">agentswap tokens</span>
+<span class="prompt">agentswap tokens <span class="flag">-c</span> <span class="value">base</span></span>
+
+<span class="comment">Lists all known tokens: address, symbol, decimals. Filter by chain.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap pools</div>
+<pre><span class="prompt">agentswap pools <span class="flag">-c</span> <span class="value">base</span> <span class="flag">-a</span> <span class="value">0x1234...</span></span>
+
+<span class="comment">Inspect pool state: reserves, liquidity, fee, grade.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap key-info</div>
+<pre><span class="prompt">agentswap key-info</span>
+
+<span class="comment">Shows API key status, quota remaining, and usage.</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap buy-quota</div>
+<pre><span class="comment"># Buy quota with USDC (direct)</span>
+<span class="prompt">agentswap buy-quota <span class="flag">-c</span> <span class="value">base</span> <span class="flag">-t</span> <span class="value">USDC</span> <span class="flag">-a</span> <span class="value">1</span></span>
+
+<span class="comment"># Buy quota with any token (auto-swap to USDC)</span>
+<span class="prompt">agentswap buy-quota <span class="flag">-c</span> <span class="value">base</span> <span class="flag">-t</span> <span class="value">WETH</span> <span class="flag">-a</span> <span class="value">0.0004</span></span>
+
+<span class="comment">Outputs wallet call instructions (approve + buyWithToken).</span>
+<span class="comment">Does NOT send transactions — use your wallet to execute.</span>
+
+<span class="comment">Options:</span>
+  <span class="flag">-c, --chain</span>   Chain: base, arbitrum
+  <span class="flag">-t, --token</span>   Payment token (symbol or address)
+  <span class="flag">-a, --amount</span>  Amount in human-readable units</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## agentswap route-explain</div>
+<pre><span class="prompt">agentswap route-explain --hash 0x...</span>
+
+<span class="comment">Explain a saved quote route by its hash (from quote response).</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## JSON Output</div>
+<pre><span class="comment"># pipe to jq for scripting</span>
+<span class="prompt">agentswap quote -c base -f USDC -t WETH -a 1000 --json | jq -r '.output'</span>
+<span class="value">401234567890123456</span>
+
+<span class="prompt">agentswap health --json | jq -r '.status'</span>
+<span class="value">ok</span>
+
+<span class="comment"># batch quote as JSON</span>
+<span class="prompt">agentswap batch-quote -c base -a 1000 USDC/WETH WETH/DAI --json | jq '.'</span></pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Environment Variables</div>
+<pre><span class="flag">AGENTSWAP_URL</span>   Service endpoint (default: https://api.agentswap.co)
+<span class="flag">SR_API_KEY</span>       API key (overrides ~/.agentswap/credentials)</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## All Commands</div>
+<pre><span class="success">quote</span>          Get a swap quote
+<span class="success">buy-quota</span>      Buy API quota with any token
+<span class="success">batch-quote</span>    Quote multiple pairs at once
+<span class="success">health</span>         Service health check
+<span class="success">chains</span>         List supported chains and DEXes
+<span class="success">tokens</span>         List supported tokens
+<span class="success">pools</span>          Inspect a specific pool
+<span class="success">register</span>       Register API key via wallet signature
+<span class="success">pricing</span>        Show pricing and payment info
+<span class="success">key-info</span>       API key status and quota
+<span class="success">quota-claim</span>    Claim purchased quota
+<span class="success">route-explain</span>  Explain a saved route by hash</pre>
+        </div>
+      </main>
+      <footer class="site-footer">AgentSwap v1.43.2 &mdash; built for agents &mdash; <a href="https://www.x402.org">x402</a> native</footer>
+    </div>
+  </body>
+</html>

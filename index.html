@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AgentSwap — AI-agent-optimized DEX aggregator. Sub-millisecond quotes across 60+ DEXes on Ethereum, Base, and Arbitrum.">
+    <title>AgentSwap — DEX Routing for AI Agents</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <nav class="site-nav">
+        <div class="site-nav-inner">
+          <a class="site-brand" href="/">AgentSwap</a>
+          <span class="text-dim">|</span>
+          <a href="/docs/api">api</a>
+          <a href="/docs/cli">cli</a>
+          <a href="/docs/chains">chains</a>
+          <span class="text-dim">|</span>
+          <a class="text-green" href="http://app.agentswap.co/">launch app &rarr;</a>
+        </div>
+      </nav>
+      <main>
+        <pre class="hero-art">    _                    _   ___
+   /_\  __ _ ___ _ _  | |_/ __|_ __ ____ _ _ __
+  / _ \/ _` / -_) ' \ |  _\__ \ V  V / _` | '_ \
+ /_/ \_\__, \___|_||_| \__|___/\_/\_/\__,_| .__/
+       |___/                               |_|</pre>
+
+        <p class="mb-6">
+          <span class="success">Optimal DEX routing for AI agents.</span><br>
+          Sub-millisecond quotes across 60+ DEXes on Ethereum, Base, and Arbitrum.<br>
+          CLI + REST API + native <a href="https://www.x402.org">x402</a> payments. No API key required.<br>
+          <a class="text-green" href="http://app.agentswap.co/">Launch App &rarr;</a>
+        </p>
+
+        <!-- Send to Agent copy block -->
+        <div class="block mb-8" style="position:relative">
+          <div class="block-title">## Send to Your Agent</div>
+          <button onclick="copyAgent()" id="copy-btn" style="position:absolute;top:0.75rem;right:0.75rem;background:var(--bg);border:1px solid var(--border);color:var(--green);padding:0.25rem 0.75rem;font:inherit;font-size:12px;cursor:pointer;border-radius:3px">copy</button>
+<pre id="agent-text">AgentSwap is a DEX aggregator API for on-chain token swaps.
+
+Endpoint: https://api.agentswap.co
+Payment: x402 protocol (auto, no API key needed)
+Price: $0.0001 per quote
+
+Quote: POST https://api.agentswap.co/quote
+Body: {"chain_id":8453,"token_in":"USDC_ADDRESS","token_out":"WETH_ADDRESS","amount_in":"1000000000","amount_usd":1000}
+
+Response includes: output amount, route path, calldata (ready for on-chain execution), gas estimate, price impact.
+
+Supported chains: Ethereum (1), Base (8453), Arbitrum (42161)
+Docs: https://agentswap.co/docs/api</pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## Quick Start</div>
+<pre><span class="comment"># 1. Install CLI</span>
+<span class="prompt">cargo install agentswap</span>
+
+<span class="comment"># 2. Get a swap quote</span>
+<span class="prompt">agentswap quote -c base -f USDC -t WETH -a 1000</span>
+
+<span class="comment"># 3. Buy API quota with any token</span>
+<span class="prompt">agentswap buy-quota -c base -t USDC -a 1</span>         <span class="comment"># pay with USDC</span>
+<span class="prompt">agentswap buy-quota -c base -t WETH -a 0.0004</span>    <span class="comment"># pay with WETH</span>
+
+<span class="comment"># 4. REST API (direct HTTP)</span>
+<span class="prompt">curl -X POST https://api.agentswap.co/quote \</span>
+  <span class="flag">-H</span> <span class="value">"Content-Type: application/json"</span> \
+  <span class="flag">-d</span> <span class="value">'{"chain_id":8453,"token_in":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913","token_out":"0x4200000000000000000000000000000000000006","amount_in":"1000000000","amount_usd":1000}'</span></pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## x402 Payment (zero setup)</div>
+<pre><span class="comment"># Any x402-compatible SDK works out of the box.</span>
+<span class="comment"># No registration, no API key — just pay and query.</span>
+
+1) POST /quote
+   <span class="error">&rarr; 402</span> + <span class="flag">PAYMENT-REQUIRED</span> header (base64 JSON)
+   Contains: network, asset (USDC), amount, pay_to address
+
+2) Agent signs EIP-3009 transferWithAuthorization (off-chain, gasless)
+
+3) POST /quote + <span class="flag">PAYMENT-SIGNATURE</span> header (base64 payload)
+   <span class="success">&rarr; 200</span> + quote response + <span class="flag">PAYMENT-RESPONSE</span> header
+
+<span class="comment"># Price: $0.0001 per quote (USDC)</span>
+<span class="comment"># Networks: Base (eip155:8453), Arbitrum (eip155:42161)</span>
+<span class="comment"># Discovery: GET /.well-known/x402</span></pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## Pay with Any Token</div>
+<pre><span class="comment"># Buy API quota on-chain using ANY ERC-20 token.</span>
+<span class="comment"># Powered by AgentSwap's own routing — dog-fooding our swap engine.</span>
+
+<span class="prompt">agentswap buy-quota -c base -t WETH -a 0.0004</span>
+  &rarr; Swaps WETH to USDC via AgentSwap executor
+  &rarr; Credits ~10,000 quotes to your API key
+  &rarr; $0.0001 per quote
+
+<span class="comment">Contracts (QuotaPurchase):</span>
+  Base     : <span class="value">0xac78e3bf6e3ed0dc2ee830773a2e6f0b8b740967</span>
+  Arbitrum : <span class="value">0xd0066bbc592ac748ee8734c9771c138130e6b703</span>
+
+<span class="comment">Accepts: USDC (direct), or any token with DEX liquidity (auto-swap).</span>
+<span class="comment">Slippage protection: minUsdcOut parameter prevents sandwich attacks.</span></pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## Capabilities</div>
+<pre>ROUTING
+  engine    : Dijkstra + Yen's k-shortest-paths
+  split     : multi-route splitting for large orders
+  fallback  : local (&lt;1ms) &rarr; RPC hint (~50ms) &rarr; aggregator (1-3s)
+  calldata  : ABI-encoded, ready for on-chain execution
+  safety    : per-pool grading (A-F), 50% price impact circuit breaker
+
+COVERAGE
+  chains    : Ethereum (1), Base (8453), Arbitrum (42161)
+  dexes     : 29 on Base, 20 on Arbitrum, 14 on Ethereum
+  pools     : 15,000+ actively tracked and graded
+  exotic    : Curve, Balancer, DODO, TraderJoe LB, Fluid, Maverick, WOOFi
+
+INTEGRATION
+  cli       : <span class="prompt">cargo install agentswap</span> &mdash; 12 commands, --json flag
+  api       : POST /quote, GET /health, GET /api/tokens, ...
+  latency   : &lt;1ms local quotes, &lt;50ms with RPC verification
+
+STANDARDS
+  discovery : /.well-known/agent-registration.json (EIP-8004)
+  payment   : x402 v2 (Coinbase spec) &mdash; zero setup
+  x402      : /.well-known/x402 discovery, /x402/verify, /x402/settle</pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## CLI Commands</div>
+<pre><span class="prompt">agentswap quote <span class="flag">-c</span> base <span class="flag">-f</span> USDC <span class="flag">-t</span> WETH <span class="flag">-a</span> 1000</span>     <span class="comment"># get quote</span>
+<span class="prompt">agentswap batch-quote <span class="flag">-c</span> base <span class="flag">-a</span> 1000 USDC/WETH</span>    <span class="comment"># multi-pair</span>
+<span class="prompt">agentswap buy-quota <span class="flag">-c</span> base <span class="flag">-t</span> WETH <span class="flag">-a</span> 0.0004</span>     <span class="comment"># buy quota (any token)</span>
+<span class="prompt">agentswap health</span>                                    <span class="comment"># service status</span>
+<span class="prompt">agentswap chains</span>                                    <span class="comment"># supported DEXes</span>
+<span class="prompt">agentswap tokens <span class="flag">-c</span> base</span>                             <span class="comment"># token list</span>
+<span class="prompt">agentswap pools <span class="flag">-c</span> base <span class="flag">-a</span> 0x...</span>                   <span class="comment"># inspect pool</span>
+<span class="prompt">agentswap pricing</span>                                   <span class="comment"># payment info</span>
+<span class="prompt">agentswap register --address 0x... --key-file k.txt</span> <span class="comment"># get API key</span></pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## API Endpoints</div>
+<pre>POST  /quote                    Swap quote (main endpoint)
+GET   /health                   Health check
+GET   /api/tokens               Token registry
+GET   /api/pool/:chain/:addr    Pool info
+
+<span class="comment">x402 payment:</span>
+GET   /.well-known/x402         Payment discovery
+POST  /x402/verify              Verify payment signature
+POST  /x402/settle              Settle payment on-chain
+
+<span class="comment">API key auth (optional):</span>
+POST  /auth/challenge           EIP-191 challenge nonce
+POST  /auth/register            Register API key
+GET   /auth/pricing             Quota pricing
+POST  /auth/quota/claim         Claim purchased quota</pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## Example Quote Response</div>
+<pre>{
+  "output": "401234567890123456",
+  "gas_estimate": "184000",
+  "source": "local",
+  "route_path": "USDC&gt;[UniV3:500]&gt;WETH",
+  "price_impact_bps": 8,
+  "pool_grades": ["A"],
+  "calldata": "0x...",
+  "to": "0x70eaD10dF02BF389Fd69bC07Afc45b1e5138A56E",
+  "quote_hash": "0xabc123..."
+}</pre>
+        </div>
+
+        <div class="block mb-8">
+          <div class="block-title">## Supported DEXes</div>
+<pre>BASE (29):
+  UniswapV2/V3/V4  AerodromeV2/Slipstream  PancakeswapV2/V3/InfinityCL
+  SushiswapV3  BaseSwapV2/V3  AlienBaseV3  DackieSwap  SwapBased
+  RocketSwap  HydrexIntegral  Curve/TwoCrypto  BalancerV2/V3
+  TraderJoeLB  FluidDex  MaverickV2  WOOFi  SolidlyV3
+
+ARBITRUM (20):
+  UniswapV2/V3/V4  PancakeswapV3  SushiswapV3  CamelotV2/V3
+  QuickSwapV4  Zyberswap  Curve/Tricrypto  BalancerV2  TraderJoeLB
+  DODO  MaverickV2  MIM Swap  WOOFi  FluidDex  Swaap V2
+
+ETHEREUM (14):
+  UniswapV2/V3/V4  SushiswapV2/V3  PancakeswapV3  Curve/Tricrypto/TwoCrypto
+  BalancerV2/V3  MaverickV2  WOOFi  FluidDex
+
+<a href="/docs/chains">Full DEX list with pool counts &rarr;</a></pre>
+        </div>
+
+      </main>
+      <footer class="site-footer">AgentSwap v1.43.2 &mdash; built for agents &mdash; <a href="https://www.x402.org">x402</a> native</footer>
+    </div>
+    <script>
+    function copyAgent(){
+      var t=document.getElementById('agent-text').textContent;
+      navigator.clipboard.writeText(t).then(function(){
+        var b=document.getElementById('copy-btn');
+        b.textContent='copied!';b.style.color='var(--yellow)';
+        setTimeout(function(){b.textContent='copy';b.style.color='var(--green)';},1500);
+      });
+    }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<!--
+  Static API reference page for the AgentSwap website.
+  Exports the docs content with embedded nav/footer and relative links.
+  Depends on ../css/style.css plus root-level static assets.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-agent-optimized DEX aggregator">
+    <title>API Reference | AgentSwap</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <nav class="site-nav">
+        <div class="site-nav-inner">
+          <a class="site-brand" href="/">AgentSwap</a>
+          <span class="text-dim">|</span>
+          <a href="api">api</a>
+          <a href="cli">cli</a>
+          <a href="chains">chains</a>
+          <span class="text-dim">|</span>
+          <a class="text-green" href="http://app.agentswap.co/">launch app &rarr;</a>
+        </div>
+      </nav>
+      <main>
+        <div class="docs-path">docs/api-reference</div>
+        <h1 class="page-title"># API Reference</h1>
+
+        <div class="block mb-6">
+          <div class="block-title">## Agent Discovery</div>
+          <p class="text-dim mb-3"><code>/.well-known/agent-registration.json</code> — EIP-8004 agent metadata<br><code>/.well-known/x402</code> — x402 payment discovery (networks, pricing, facilitator)</p>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## x402 Payment Protocol</div>
+          <p class="text-dim mb-3">Native <a href="https://www.x402.org">x402 v2</a> support. Any x402-compatible SDK works — no registration, no API key.</p>
+<pre><span class="comment">Flow:</span>
+1. POST /quote → <span class="error">402</span> + <span class="flag">PAYMENT-REQUIRED</span> header
+2. Agent signs EIP-3009 transferWithAuthorization (gasless)
+3. POST /quote + <span class="flag">PAYMENT-SIGNATURE</span> header → <span class="success">200</span> + quote
+
+<span class="comment">PAYMENT-REQUIRED header (base64 JSON):</span>
+{
+  "x402Version": 2,
+  "accepts": [{
+    "scheme": "exact",
+    "network": "eip155:8453",
+    "amount": "100",
+    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "payTo": "0xd55dDB23D8B5BE8085C1CD47A570a96b8752637a1",
+    "maxTimeoutSeconds": 60
+  }],
+  "resource": {
+    "url": "/quote",
+    "description": "DEX aggregator swap quote",
+    "mimeType": "application/json"
+  }
+}
+
+<span class="comment">Facilitator endpoints (for SDK integration):</span>
+GET   /.well-known/x402    Discovery: networks, pricing, facilitator URL
+POST  /x402/verify         Verify payment signature off-chain
+POST  /x402/settle         Settle payment on-chain (transferWithAuthorization)</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## POST /quote</div>
+          <p class="text-dim mb-3">Get the best swap route across all supported DEXes.</p>
+<pre><span class="comment">Request:</span>
+{
+  "chain_id": 8453,
+  "token_in": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "token_out": "0x4200000000000000000000000000000000000006",
+  "amount_in": "1000000000",
+  "amount_usd": 1000.0,
+  "slippage_bps": 50,
+  "taker": "0x1111111111111111111111111111111111111111",
+  "allow_partial": false
+}
+
+<span class="comment">Response:</span>
+{
+  "dex": "SmartRouter",
+  "output": "401234567890123456",
+  "gas_estimate": "184000",
+  "source": "local",
+  "router": "0x8b4F808...",
+  "calldata": "0x...",
+  "execution": {
+    "spender": "0x8b4F808...",
+    "target": "0x8b4F808...",
+    "calldata": "0x...",
+    "value": "0x0"
+  },
+  "steps": [...],
+  "route_path": "USDC&gt;[UniV3:500]&gt;WETH",
+  "price_impact_bps": 8,
+  "pool_grades": ["A"],
+  "route_executable": true,
+  "route_unexecutable_reason": null,
+  "last_sync_block": 28456789,
+  "sync_lag_ms": 2100,
+  "tax_in_bps": 0,
+  "tax_out_bps": 0
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## POST /compare/simulate</div>
+          <p class="text-dim mb-3">Compare normalized execution payloads by dry-run realized output. Winner selection uses <code>actualOutput</code>, not <code>quotedOutput</code>.</p>
+<pre><span class="comment">Request:</span>
+{
+  "chainId": 8453,
+  "candidates": [{
+    "providerId": "odos",
+    "target": "0x2222222222222222222222222222222222222222",
+    "data": "0x1234abcd...",
+    "value": "0x0",
+    "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "outputToken": "0x4200000000000000000000000000000000000006",
+    "inputAmount": "1250000000",
+    "approveTarget": "0x8b4F80818376FE1903c930A2a74823611732c7f4",
+    "quotedOutput": "2489150000"
+  }]
+}
+
+<span class="comment">Response:</span>
+{
+  "results": [{
+    "providerId": "odos",
+    "status": "ok",
+    "success": true,
+    "quotedOutput": "2489150000",
+    "actualOutput": "2487000000",
+    "accuracyDelta": "-2150000",
+    "accuracyBps": 9991,
+    "error": null
+  }],
+  "winnerProviderId": "odos"
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## POST /auth/quota/claim</div>
+          <p class="text-dim mb-3">Applies purchased quota from an on-chain transaction. Requires <code>X-API-Key</code> header.</p>
+<pre><span class="comment">Request:</span>
+{
+  "chain_id": 8453,
+  "tx_hash": "0x..."
+}
+
+<span class="comment">Response:</span>
+{
+  "chain_id": 8453,
+  "tx_hash": "0x...",
+  "purchased_quotes": 10000,
+  "quota_total": 10050,
+  "quota_used": 42,
+  "quota_remaining": 10008
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## GET /health</div>
+          <p class="text-dim mb-3">Health check with pool counts, sync status, memory.</p>
+<pre>{
+  "status": "ok",
+  "version": "1.5.8",
+  "uptime_secs": 45000,
+  "pools": { "total": 12500, "v2": 3000, "v3": 5000, "v4": 200, ... },
+  "sync": { "max_lag_ms": 2500, "v2_last_block": 28456789, ... },
+  "memory": { "total_tracked_mb": 180, "v3_estimated_mb": 120, ... },
+  "system": { "rss_mb": 280, "jemalloc_allocated_mb": 200, "num_cpus": 4 },
+  "grades": [{ "chain": "Base", "distribution": [500,1200,2000,800,200,50] }],
+  "graphs": [{ "chain": "Base", "tokens": 450, "edges": 8000 }]
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## GET /api/tokens</div>
+          <p class="text-dim mb-3">Token registry: address to chain/symbol/decimals.</p>
+<pre>{
+  "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": { "chain_id": 1, "symbol": "USDC", "decimals": 6 },
+  "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": { "chain_id": 8453, "symbol": "USDC", "decimals": 6 },
+  "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": { "chain_id": 42161, "symbol": "WETH", "decimals": 18 },
+  ...
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## GET /api/pool/:chain_id/:address</div>
+          <p class="text-dim mb-3">Pool debug: tokens, reserves/liquidity, tick state, grade.</p>
+<pre>{
+  "address": "0x...",
+  "chain_id": 8453,
+  "found_in": "v3",
+  "grade": "A",
+  "v3": {
+    "token0": "0x833589f...",
+    "token1": "0x4200000...",
+    "fee": 500,
+    "liquidity": "123456789012345",
+    "tick": -200100,
+    "tick_count": 842
+  }
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## GET /stats/pairs</div>
+          <p class="text-dim mb-3">Query params: <code>chain_id</code>, <code>sort_by</code> (total|last_hour|recent|trending), <code>limit</code></p>
+<pre>{
+  "total_pairs": 250,
+  "total_queries": 150000,
+  "pairs": [{
+    "token_in": "0x833589f...",
+    "token_out": "0x4200000...",
+    "total": 5000,
+    "local": 4800,
+    "path_hint": 150,
+    "not_found": 50,
+    "avg_latency_ms": 0.8
+  }]
+}</pre>
+        </div>
+
+        <div class="block mb-6">
+          <div class="block-title">## Error Codes</div>
+<pre><span class="error">400</span>  Bad Request      invalid token address, unsupported chain_id
+<span class="error">401</span>  Unauthorized     missing or invalid API key / payment signature
+<span class="error">402</span>  Payment Required quota exhausted; <code>PAYMENT-REQUIRED</code> header with x402 v2 payload
+<span class="error">404</span>  Not Found        no route found for the given pair/amount
+<span class="error">503</span>  Unavailable      RPC pool exhausted, service degraded</pre>
+        </div>
+      </main>
+      <footer class="site-footer">AgentSwap v1.43.2 &mdash; built for agents &mdash; <a href="https://www.x402.org">x402</a> native</footer>
+    </div>
+  </body>
+</html>

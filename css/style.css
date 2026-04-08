@@ -1,0 +1,233 @@
+/*
+ * Shared static styles for the AgentSwap website.
+ * Exports the terminal-themed layout, utilities, and docs/landing blocks.
+ * Depends on JetBrains Mono from Google Fonts and the existing design tokens.
+ */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+:root {
+  --green: #4ade80;
+  --green-dim: #22c55e;
+  --cyan: #22d3ee;
+  --yellow: #facc15;
+  --red: #f87171;
+  --bg: #0c0c0c;
+  --bg-block: #111111;
+  --border: #2a2a2a;
+  --text: #d4d4d4;
+  --text-dim: #737373;
+  --prompt: #4ade80;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.7 "JetBrains Mono", "Fira Code", "SF Mono", "Menlo", monospace;
+}
+
+main {
+  width: 100%;
+  max-width: 56rem;
+  flex: 1;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--bg);
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre,
+code {
+  font: inherit;
+}
+
+pre {
+  margin: 0;
+  white-space: pre;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 0.25rem 1rem 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--green);
+  text-align: left;
+}
+
+td {
+  padding: 0.25rem 1rem 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+code,
+.flag {
+  color: var(--cyan);
+}
+
+.value {
+  color: var(--yellow);
+}
+
+.comment,
+.text-dim {
+  color: var(--text-dim);
+}
+
+.error {
+  color: var(--red);
+}
+
+.success,
+.text-green,
+h1,
+h2,
+h3 {
+  color: var(--green);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+}
+
+.site-nav {
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+}
+
+.site-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  font-size: 0.875rem;
+}
+
+.site-brand {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.site-brand:hover {
+  text-decoration: none;
+}
+
+.site-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.docs-path {
+  margin-bottom: 0.5rem;
+  color: var(--text-dim);
+}
+
+.page-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.25rem;
+}
+
+.hero-art {
+  margin-bottom: 1.5rem;
+  color: var(--green);
+  overflow-x: auto;
+}
+
+.block {
+  margin: 0.5rem 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  background: var(--bg-block);
+  border: 1px solid var(--border);
+}
+
+.block-title {
+  margin-bottom: 0.25rem;
+  color: var(--green);
+}
+
+.prompt::before {
+  content: "$ ";
+  color: var(--prompt);
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 720px) {
+  body {
+    font-size: 13px;
+  }
+
+  main,
+  .site-nav,
+  .site-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .site-nav-inner {
+    gap: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    font-size: 1.125rem;
+  }
+
+  .hero-art,
+  .block pre {
+    font-size: 12px;
+  }
+}
