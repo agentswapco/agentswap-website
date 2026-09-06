@@ -10,6 +10,7 @@ const destination = join(root, 'dist');
 const publicFiles = [
   'index.html', 'favicon.svg', 'robots.txt', 'sitemap.xml',
   'brand', 'css', 'docs', 'js', '.well-known',
+  'install.sh', '_headers',
 ];
 
 await rm(destination, { recursive: true, force: true });
