@@ -15,7 +15,7 @@
   --bg-block: #111111;
   --border: #2a2a2a;
   --text: #d4d4d4;
-  --text-dim: #737373;
+  --text-dim: #929292;
   --prompt: #4ade80;
 }
 
@@ -133,6 +133,9 @@ h3 {
 }
 
 .site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--green);
   font-weight: 700;
 }
@@ -204,6 +207,25 @@ h3 {
 .mb-8 {
   margin-bottom: 2rem;
 }
+
+/* Product overview, keyboard access, and agent handoff controls. */
+main { min-width: 0; }
+.product-section { border-top: 1px solid var(--border); padding: 1.5rem 0 2rem; }
+.product-section h2 { margin: 0.25rem 0 0.75rem; font-size: 1.25rem; }
+.block-title { font-size: 1rem; font-weight: 500; margin-top: 0; }
+.block-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.block pre { overflow-x: auto; }
+#agent-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+#copy-status { margin-bottom: 0; color: var(--green); min-height: 1.7em; }
+button { background: var(--bg); border: 1px solid var(--border); color: var(--green); padding: 0.5rem 0.75rem; font: inherit; cursor: pointer; }
+button:hover { border-color: var(--green); }
+button:disabled { opacity: 0.6; cursor: wait; }
+a:focus-visible, button:focus-visible, pre:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+.skip-link { position: absolute; left: 1rem; top: -5rem; padding: 0.75rem; background: var(--bg); z-index: 1; }
+.skip-link:focus { top: 0.5rem; }
+.table-scroll { overflow-x: auto; }
+td, th { vertical-align: top; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 @media (max-width: 720px) {
   body {

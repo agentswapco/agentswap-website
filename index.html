@@ -1,219 +1,199 @@
+<!-- AgentSwap landing page explaining User Proxy permissions and agent intents.
+     Exports: product story, animated authorization walkthrough, developer entry points.
+     Dependencies: shared styles, landing styles, and native JavaScript feature modules. -->
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AgentSwap — AI-agent-optimized DEX aggregator. Sub-millisecond quotes across 60+ DEXes on Ethereum, Base, and Arbitrum.">
-    <title>AgentSwap — DEX Routing for AI Agents</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <div class="site-shell">
-      <nav class="site-nav">
-        <div class="site-nav-inner">
-          <a class="site-brand" href="/">AgentSwap</a>
-          <span class="text-dim">|</span>
-          <a href="/docs/api">api</a>
-          <a href="/docs/cli">cli</a>
-          <a href="/docs/chains">chains</a>
-          <span class="text-dim">|</span>
-          <a class="text-green" href="http://app.agentswap.co/">launch app &rarr;</a>
-        </div>
-      </nav>
-      <main>
-        <pre class="hero-art">    _                    _   ___
-   /_\  __ _ ___ _ _  | |_/ __|_ __ ____ _ _ __
-  / _ \/ _` / -_) ' \ |  _\__ \ V  V / _` | '_ \
- /_/ \_\__, \___|_||_| \__|___/\_/\_/\__,_| .__/
-       |___/                               |_|</pre>
-
-        <p class="mb-6">
-          <span class="success">Optimal DEX routing for AI agents.</span><br>
-          Sub-millisecond quotes across 60+ DEXes on Ethereum, Base, and Arbitrum.<br>
-          CLI + REST API + native <a href="https://www.x402.org">x402</a> payments. No API key required.<br>
-          <a class="text-green" href="http://app.agentswap.co/">Launch App &rarr;</a>
-        </p>
-
-        <!-- Send to Agent copy block -->
-        <div class="block mb-8" style="position:relative">
-          <div class="block-title">## Send to Your Agent</div>
-          <button onclick="copyAgent()" id="copy-btn" style="position:absolute;top:0.75rem;right:0.75rem;background:var(--bg);border:1px solid var(--border);color:var(--green);padding:0.25rem 0.75rem;font:inherit;font-size:12px;cursor:pointer;border-radius:3px">copy</button>
-<pre id="agent-text">AgentSwap is a DEX aggregator API for on-chain token swaps.
-
-Endpoint: https://api.agentswap.co
-Payment: x402 protocol (auto, no API key needed)
-Price: $0.0001 per quote
-
-Quote: POST https://api.agentswap.co/quote
-Body: {"chain_id":8453,"token_in":"USDC_ADDRESS","token_out":"WETH_ADDRESS","amount_in":"1000000000","amount_usd":1000}
-
-Response includes: output amount, route path, calldata (ready for on-chain execution), gas estimate, price impact.
-
-Supported chains: Ethereum (1), Base (8453), Arbitrum (42161)
-Docs: https://agentswap.co/docs/api</pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## Quick Start</div>
-<pre><span class="comment"># 1. Install CLI</span>
-<span class="prompt">cargo install agentswap</span>
-
-<span class="comment"># 2. Get a swap quote</span>
-<span class="prompt">agentswap quote -c base -f USDC -t WETH -a 1000</span>
-
-<span class="comment"># 3. Buy API quota with any token</span>
-<span class="prompt">agentswap buy-quota -c base -t USDC -a 1</span>         <span class="comment"># pay with USDC</span>
-<span class="prompt">agentswap buy-quota -c base -t WETH -a 0.0004</span>    <span class="comment"># pay with WETH</span>
-
-<span class="comment"># 4. REST API (direct HTTP)</span>
-<span class="prompt">curl -X POST https://api.agentswap.co/quote \</span>
-  <span class="flag">-H</span> <span class="value">"Content-Type: application/json"</span> \
-  <span class="flag">-d</span> <span class="value">'{"chain_id":8453,"token_in":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913","token_out":"0x4200000000000000000000000000000000000006","amount_in":"1000000000","amount_usd":1000}'</span></pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## x402 Payment (zero setup)</div>
-<pre><span class="comment"># Any x402-compatible SDK works out of the box.</span>
-<span class="comment"># No registration, no API key — just pay and query.</span>
-
-1) POST /quote
-   <span class="error">&rarr; 402</span> + <span class="flag">PAYMENT-REQUIRED</span> header (base64 JSON)
-   Contains: network, asset (USDC), amount, pay_to address
-
-2) Agent signs EIP-3009 transferWithAuthorization (off-chain, gasless)
-
-3) POST /quote + <span class="flag">PAYMENT-SIGNATURE</span> header (base64 payload)
-   <span class="success">&rarr; 200</span> + quote response + <span class="flag">PAYMENT-RESPONSE</span> header
-
-<span class="comment"># Price: $0.0001 per quote (USDC)</span>
-<span class="comment"># Networks: Base (eip155:8453), Arbitrum (eip155:42161)</span>
-<span class="comment"># Discovery: GET /.well-known/x402</span></pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## Pay with Any Token</div>
-<pre><span class="comment"># Buy API quota on-chain using ANY ERC-20 token.</span>
-<span class="comment"># Powered by AgentSwap's own routing — dog-fooding our swap engine.</span>
-
-<span class="prompt">agentswap buy-quota -c base -t WETH -a 0.0004</span>
-  &rarr; Swaps WETH to USDC via AgentSwap executor
-  &rarr; Credits ~10,000 quotes to your API key
-  &rarr; $0.0001 per quote
-
-<span class="comment">Contracts (QuotaPurchase):</span>
-  Base     : <span class="value">0xac78e3bf6e3ed0dc2ee830773a2e6f0b8b740967</span>
-  Arbitrum : <span class="value">0xd0066bbc592ac748ee8734c9771c138130e6b703</span>
-
-<span class="comment">Accepts: USDC (direct), or any token with DEX liquidity (auto-swap).</span>
-<span class="comment">Slippage protection: minUsdcOut parameter prevents sandwich attacks.</span></pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## Capabilities</div>
-<pre>ROUTING
-  engine    : Dijkstra + Yen's k-shortest-paths
-  split     : multi-route splitting for large orders
-  fallback  : local (&lt;1ms) &rarr; RPC hint (~50ms) &rarr; aggregator (1-3s)
-  calldata  : ABI-encoded, ready for on-chain execution
-  safety    : per-pool grading (A-F), 50% price impact circuit breaker
-
-COVERAGE
-  chains    : Ethereum (1), Base (8453), Arbitrum (42161)
-  dexes     : 29 on Base, 20 on Arbitrum, 14 on Ethereum
-  pools     : 15,000+ actively tracked and graded
-  exotic    : Curve, Balancer, DODO, TraderJoe LB, Fluid, Maverick, WOOFi
-
-INTEGRATION
-  cli       : <span class="prompt">cargo install agentswap</span> &mdash; 12 commands, --json flag
-  api       : POST /quote, GET /health, GET /api/tokens, ...
-  latency   : &lt;1ms local quotes, &lt;50ms with RPC verification
-
-STANDARDS
-  discovery : /.well-known/agent-registration.json (EIP-8004)
-  payment   : x402 v2 (Coinbase spec) &mdash; zero setup
-  x402      : /.well-known/x402 discovery, /x402/verify, /x402/settle</pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## CLI Commands</div>
-<pre><span class="prompt">agentswap quote <span class="flag">-c</span> base <span class="flag">-f</span> USDC <span class="flag">-t</span> WETH <span class="flag">-a</span> 1000</span>     <span class="comment"># get quote</span>
-<span class="prompt">agentswap batch-quote <span class="flag">-c</span> base <span class="flag">-a</span> 1000 USDC/WETH</span>    <span class="comment"># multi-pair</span>
-<span class="prompt">agentswap buy-quota <span class="flag">-c</span> base <span class="flag">-t</span> WETH <span class="flag">-a</span> 0.0004</span>     <span class="comment"># buy quota (any token)</span>
-<span class="prompt">agentswap health</span>                                    <span class="comment"># service status</span>
-<span class="prompt">agentswap chains</span>                                    <span class="comment"># supported DEXes</span>
-<span class="prompt">agentswap tokens <span class="flag">-c</span> base</span>                             <span class="comment"># token list</span>
-<span class="prompt">agentswap pools <span class="flag">-c</span> base <span class="flag">-a</span> 0x...</span>                   <span class="comment"># inspect pool</span>
-<span class="prompt">agentswap pricing</span>                                   <span class="comment"># payment info</span>
-<span class="prompt">agentswap register --address 0x... --key-file k.txt</span> <span class="comment"># get API key</span></pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## API Endpoints</div>
-<pre>POST  /quote                    Swap quote (main endpoint)
-GET   /health                   Health check
-GET   /api/tokens               Token registry
-GET   /api/pool/:chain/:addr    Pool info
-
-<span class="comment">x402 payment:</span>
-GET   /.well-known/x402         Payment discovery
-POST  /x402/verify              Verify payment signature
-POST  /x402/settle              Settle payment on-chain
-
-<span class="comment">API key auth (optional):</span>
-POST  /auth/challenge           EIP-191 challenge nonce
-POST  /auth/register            Register API key
-GET   /auth/pricing             Quota pricing
-POST  /auth/quota/claim         Claim purchased quota</pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## Example Quote Response</div>
-<pre>{
-  "output": "401234567890123456",
-  "gas_estimate": "184000",
-  "source": "local",
-  "route_path": "USDC&gt;[UniV3:500]&gt;WETH",
-  "price_impact_bps": 8,
-  "pool_grades": ["A"],
-  "calldata": "0x...",
-  "to": "0x70eaD10dF02BF389Fd69bC07Afc45b1e5138A56E",
-  "quote_hash": "0xabc123..."
-}</pre>
-        </div>
-
-        <div class="block mb-8">
-          <div class="block-title">## Supported DEXes</div>
-<pre>BASE (29):
-  UniswapV2/V3/V4  AerodromeV2/Slipstream  PancakeswapV2/V3/InfinityCL
-  SushiswapV3  BaseSwapV2/V3  AlienBaseV3  DackieSwap  SwapBased
-  RocketSwap  HydrexIntegral  Curve/TwoCrypto  BalancerV2/V3
-  TraderJoeLB  FluidDex  MaverickV2  WOOFi  SolidlyV3
-
-ARBITRUM (20):
-  UniswapV2/V3/V4  PancakeswapV3  SushiswapV3  CamelotV2/V3
-  QuickSwapV4  Zyberswap  Curve/Tricrypto  BalancerV2  TraderJoeLB
-  DODO  MaverickV2  MIM Swap  WOOFi  FluidDex  Swaap V2
-
-ETHEREUM (14):
-  UniswapV2/V3/V4  SushiswapV2/V3  PancakeswapV3  Curve/Tricrypto/TwoCrypto
-  BalancerV2/V3  MaverickV2  WOOFi  FluidDex
-
-<a href="/docs/chains">Full DEX list with pool counts &rarr;</a></pre>
-        </div>
-
-      </main>
-      <footer class="site-footer">AgentSwap v1.43.2 &mdash; built for agents &mdash; <a href="https://www.x402.org">x402</a> native</footer>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your agent only signs. Trading funds leave and return to your main wallet. Delegate through User Proxy with no agent gas top-ups for relayed execution.">
+  <meta property="og:title" content="AgentSwap — Your agent. Your rules.">
+  <meta property="og:description" content="Agent wallets only sign. Your main wallet supplies the funds and receives the proceeds. Relayers and solvers handle transaction gas.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agentswap.co/">
+  <meta name="theme-color" content="#0c0c0c">
+  <title>AgentSwap — Your agent. Your rules.</title>
+  <link rel="canonical" href="https://agentswap.co/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/scene.css">
+  <script src="/js/agent-copy.js" defer></script>
+  <script type="module" src="/js/hero/index.js"></script>
+</head>
+<body class="landing">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="landing-nav" aria-label="Main navigation">
+    <a class="wordmark" href="/" aria-label="AgentSwap home"><span class="terminal-mark" aria-hidden="true"><img src="/brand/mark.svg" width="32" height="32" alt=""></span> <span>AgentSwap</span></a>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#developers">Developers</a>
+      <a href="https://docs.agentswap.co/">Docs ↗</a>
+      <a href="https://research.agentswap.co/">Research ↗</a>
     </div>
-    <script>
-    function copyAgent(){
-      var t=document.getElementById('agent-text').textContent;
-      navigator.clipboard.writeText(t).then(function(){
-        var b=document.getElementById('copy-btn');
-        b.textContent='copied!';b.style.color='var(--yellow)';
-        setTimeout(function(){b.textContent='copy';b.style.color='var(--green)';},1500);
-      });
-    }
-    </script>
-  </body>
+    <a class="nav-launch" href="https://app.agentswap.co/">Launch app <span aria-hidden="true">↗</span></a>
+  </nav>
+  <main id="main" class="landing-main">
+    <section class="landing-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> AUTONOMY. WITH BOUNDARIES.</p>
+        <h1 id="hero-title" class="hero-statement">Your agent.<br><span>Your rules.</span></h1>
+        <p class="hero-description"><strong>Your agent only signs.</strong><br>Trading funds leave and return to your main wallet. Your Proxy enforces the limits.</p>
+        <p class="hero-signing">No agent deposits. No agent gas top-ups.</p>
+        <div class="hero-actions">
+          <a class="button-primary" href="https://app.agentswap.co/agents">Authorize your agent <span aria-hidden="true">↗</span></a>
+          <a class="button-text" href="#how-it-works">Explore the flow <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-footnote">Relayed execution: relayers and solvers submit transactions and pay gas.</p>
+      </div>
+      <section class="scene-surface" id="scene-surface" data-motion="static" aria-labelledby="journey-title">
+        <div class="journey-heading">
+          <p class="eyebrow">AN AGENT TRADE, STEP BY STEP</p>
+          <h2 id="journey-title">Your agent signs.<br>Your main wallet funds the trade.</h2>
+          <p class="journey-example">Example: swap 25 USDC from your main wallet for WETH.</p>
+        </div>
+        <ol class="journey" aria-label="From authorization to settlement">
+          <li class="journey-row is-active" data-journey-row="0">
+            <button class="journey-step" type="button" data-stage="0" aria-pressed="true">
+              <span class="journey-number" aria-hidden="true">01</span>
+              <span class="journey-content"><span class="journey-actor">YOUR MAIN WALLET</span><strong>Grant a bounded permission</strong><span class="journey-detail">USDC only · 100 USDC / day · no deposit to the agent</span></span>
+            </button>
+            <span class="journey-connector" aria-hidden="true">↓<i></i></span>
+          </li>
+          <li class="journey-row" data-journey-row="1">
+            <button class="journey-step" type="button" data-stage="1" aria-pressed="false">
+              <span class="journey-number" aria-hidden="true">02</span>
+              <span class="journey-content"><span class="journey-actor">YOUR AGENT</span><strong>Sign an intent with its own key</strong><span class="journey-detail">Off-chain signature only · no funds or gas needed</span></span>
+            </button>
+            <span class="journey-connector" aria-hidden="true">↓<i></i></span>
+          </li>
+          <li class="journey-row" data-journey-row="2">
+            <button class="journey-step" type="button" data-stage="2" aria-pressed="false">
+              <span class="journey-number" aria-hidden="true">03</span>
+              <span class="journey-content"><span class="journey-actor">YOUR USER PROXY · AT FILL TIME</span><strong>Check permission, then pull from your wallet</strong><span class="journey-detail">25 USDC from your main wallet · within your policy</span></span>
+            </button>
+            <span class="journey-connector" aria-hidden="true">↓<i></i></span>
+          </li>
+          <li class="journey-row" data-journey-row="3">
+            <button class="journey-step" type="button" data-stage="3" aria-pressed="false">
+              <span class="journey-number" aria-hidden="true">04</span>
+              <span class="journey-content"><span class="journey-actor">SOLVER → YOUR MAIN WALLET</span><strong>Return the WETH to your main wallet</strong><span class="journey-detail">Solver pays fill gas · output floor enforced</span></span>
+            </button>
+          </li>
+        </ol>
+        <div class="wallet-flow" aria-label="Trading funds flow from your main wallet, through proxy and settlement, back to your main wallet. They do not pass through the agent wallet.">
+          <span>Main wallet<small>25 USDC out</small></span><b aria-hidden="true">→</b><span>Proxy + settlement<small>Authorized execution</small></span><b aria-hidden="true">→</b><span>Main wallet<small>WETH in</small></span>
+        </div>
+        <div class="journey-takeaway"><span aria-hidden="true">↳</span> <span id="journey-takeaway">Your agent holds permission, never your trading funds.</span></div>
+        <div class="scene-toolbar">
+          <span id="journey-progress">01 / 04 · ILLUSTRATIVE EXAMPLE</span>
+          <div><button id="journey-replay" type="button" hidden>Replay ↻</button><button id="motion-toggle" type="button" aria-pressed="false" hidden>Pause motion</button></div>
+        </div>
+        <p class="journey-hint">Select a step to pause and explore.</p>
+      </section>
+      <a class="hero-scroll" href="#how-it-works" aria-label="Explore how agent permissions work">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a>
+    </section>
+
+    <section id="how-it-works" class="flow-section section-wrap" aria-labelledby="flow-title">
+      <div class="section-intro"><p class="eyebrow">FROM PERMISSION TO EXECUTION</p><h2 id="flow-title">A little permission.<br>A lot of possibility.</h2></div>
+      <div class="flow-controls" role="group" aria-label="Explore execution stages">
+        <button type="button" data-stage="0" aria-pressed="true"><span>01</span> Authorize <span class="flow-arrow" aria-hidden="true">↗</span></button>
+        <button type="button" data-stage="1" aria-pressed="false"><span>02</span> Sign intent <span class="flow-arrow" aria-hidden="true">↗</span></button>
+        <button type="button" data-stage="2" aria-pressed="false"><span>03</span> Check policy <span class="flow-arrow" aria-hidden="true">↗</span></button>
+        <button type="button" data-stage="3" aria-pressed="false"><span>04</span> Settle <span class="flow-arrow" aria-hidden="true">↗</span></button>
+      </div>
+      <div class="flow-diagram" aria-hidden="true"><span id="stage-diagram">[ YOUR WALLET ] ── permission ──▶ [ USER PROXY ]</span></div>
+      <div class="flow-description">
+        <h3 id="stage-title">You define the permission.</h3>
+        <p id="stage-description">Choose the agent, allowed actions, input tokens, spending caps, and expiry. Your wallet owns the User Proxy.</p>
+      </div>
+      <noscript><p>The agent signs off-chain with its own key and needs no trading funds or gas for relayed execution. At fill time, the proxy checks permission and budget before pulling input from the main wallet. Settlement returns proceeds to the main wallet; relayers and solvers pay submission gas.</p></noscript>
+    </section>
+
+    <section class="permission-section section-wrap" aria-labelledby="permission-title">
+      <div class="permission-copy">
+        <p class="eyebrow">THE USER PROXY</p>
+        <h2 id="permission-title">Built around<br><span>your boundaries.</span></h2>
+        <p>Your main wallet owns the Proxy and holds the trading funds until execution. The Proxy pulls only the authorized input and returns proceeds to your main wallet. Your agent wallet holds no trading funds.</p>
+        <a class="inline-link" href="https://docs.agentswap.co/proxy/overview/">Meet your User Proxy <span aria-hidden="true">↗</span></a>
+      </div>
+      <dl class="permission-list">
+        <div><dt><span>01 /</span> Choose the scope</dt><dd>Allow market swaps, intent orders, or both. Specify the input tokens the agent can use.</dd></div>
+        <div><dt><span>02 /</span> Set the budget</dt><dd>Give each token a spending cap per period. Set an expiry for the authorization.</dd></div>
+        <div><dt><span>03 /</span> Keep control</dt><dd>Inspect agent activity and revoke grants on-chain. Your main wallet supplies the input and receives the proceeds.</dd></div>
+      </dl>
+    </section>
+
+    <section class="execution-section section-wrap" aria-labelledby="execution-title">
+      <p class="eyebrow">WHAT YOUR AGENT CAN DO</p>
+      <h2 id="execution-title">Permission becomes action.</h2>
+      <div class="execution-columns">
+        <article><span class="text-mark" aria-hidden="true">[ ↔ ]</span><h3>Find a route. Make a swap.</h3><p>Compare aggregator routes, simulated output, and gas estimates. Execute through your proxy with a minimum-output guard.</p><a class="inline-link" href="/docs/api">Explore routing <span aria-hidden="true">↗</span></a></article>
+        <article><span class="text-mark" aria-hidden="true">[ ≋ ]</span><h3>Set the terms. Let solvers fill.</h3><p>An authorized agent places a Dutch intent with an exact input, an output floor, and a deadline. Solvers find an execution that meets its terms.</p><a class="inline-link" href="https://docs.agentswap.co/protocol/overview/">Explore intents <span aria-hidden="true">↗</span></a></article>
+      </div>
+      <p class="coverage-line">INTENT &amp; PROXY DEPLOYMENTS <span>Base · Arbitrum · BNB Smart Chain · Robinhood Chain</span><a href="/docs/chains">Coverage ↗</a></p>
+    </section>
+
+    <section id="developers" class="developer-section section-wrap" aria-labelledby="developer-title">
+      <div class="developer-copy"><p class="eyebrow">BUILT TO BE CALLED</p><h2 id="developer-title">An interface<br>for your agent.</h2><p>Inspect permissions, prepare trades, and track intents from a terminal or an MCP client.</p><div class="developer-links"><a href="/docs/cli">CLI &amp; MCP ↗</a><a href="/docs/api">API guide ↗</a><a href="https://docs.agentswap.co/">Protocol docs ↗</a></div></div>
+      <div class="terminal">
+        <div class="terminal-bar"><span><i></i><i></i><i></i></span> agentswap / get started</div>
+<pre><code><span class="comment"># Install</span>
+<span class="terminal-prompt">$</span> cargo install agentswap
+
+<span class="comment"># Discover available chains</span>
+<span class="terminal-prompt">$</span> agentswap chains
+
+<span class="comment"># Connect your agent over MCP</span>
+<span class="terminal-prompt">$</span> agentswap mcp</code></pre>
+        <p>Execution requires an active policy and <code>--allow-trade</code>. Set <code>--max-amount</code> in raw token units.</p>
+      </div>
+      <details class="agent-handoff">
+        <summary>Give your agent the integration details <span aria-hidden="true">+</span></summary>
+        <div class="handoff-content"><div class="block-heading"><h3>Agent instructions</h3><button type="button" id="copy-btn" aria-label="Copy agent instructions">Copy instructions ↗</button></div>
+<pre id="agent-text" tabindex="0">AgentSwap lets owners authorize AI agents through a per-owner User Proxy.
+Owners choose allowed actions, input tokens, per-period spending caps,
+and expiry. Grants are revocable on-chain. Swap proceeds go to the owner.
+Agent wallets only sign with their own key; they do not hold trading funds.
+The User Proxy pulls input from the owner's main wallet at execution,
+and proceeds return to that main wallet.
+With relayed execution, the agent needs no gas balance: the relayer
+and solver submit transactions and pay gas. Self-submission pays gas.
+
+App: https://app.agentswap.co
+Docs: https://docs.agentswap.co
+
+Multi-aggregator quotes: https://meta-api.agentswap.co
+POST /quote (JSON) or POST /quote/stream (SSE).
+Use camelCase fields: chainId, tokenIn, tokenOut, amountIn,
+taker, slippageBps. API amounts are decimal strings in raw token units.
+API guide: https://agentswap.co/docs/api
+
+Smart Router and token catalog: https://api.agentswap.co
+GET /api/chains and GET /api/tokens for current coverage.
+Smart Router /quote uses snake_case fields and requires an API key.
+
+CLI: cargo install agentswap
+MCP server: agentswap mcp
+Inspect policy before preparing a trade or intent.
+CLI guide: https://agentswap.co/docs/cli
+CLI quotes use Smart Router. For CLI 0.3.0 quote amounts,
+use raw: followed by the integer token base-unit amount.
+Policy guide: https://docs.agentswap.co/proxy/agent-delegation/
+Execution requires --allow-trade and an active owner-granted policy.
+Set --max-amount in raw input units before enabling execution.
+
+Protocol: https://docs.agentswap.co/protocol/overview/
+Deployments: https://docs.agentswap.co/reference/addresses/</pre>
+        <p id="copy-status" role="status" aria-live="polite"></p></div>
+      </details>
+    </section>
+    <section class="closing-section section-wrap" aria-labelledby="closing-title">
+      <p class="eyebrow">YOUR PROXY. YOUR AGENT. YOUR RULES.</p>
+      <h2 id="closing-title">Let your agent<br><span>get to work.</span></h2>
+      <a class="button-primary" href="https://app.agentswap.co/agents">Set up agent access <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+  <footer class="landing-footer section-wrap"><a class="wordmark" href="/"><img src="/brand/mark.svg" width="32" height="32" alt=""> <span>AgentSwap</span></a><p>Autonomy, with boundaries.</p><div><a href="https://docs.agentswap.co/reference/addresses/">Contracts ↗</a><a href="https://docs.agentswap.co/whitepaper/">Whitepaper ↗</a><a href="https://github.com/agentswapco/agentswap-cli">GitHub ↗</a><a href="https://research.agentswap.co/">Research ↗</a><a href="https://x.com/agentswapco" aria-label="AgentSwap on X">X ↗</a></div></footer>
+</body>
 </html>

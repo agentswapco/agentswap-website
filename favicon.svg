@@ -1,4 +1,10 @@
+<!--
+  AgentSwap Intents favicon: canonical mark as path geometry.
+  Exports: Green prompt on near-black rounded square.
+  Deps: Same geometry and tokens as public/brand/mark.svg.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="4" fill="#0c0c0c"/>
-  <text x="4" y="23" font-family="monospace" font-size="18" font-weight="bold" fill="#4ade80">&gt;_</text>
+  <path fill="#4ade80" d="M6.5 8.5 L9.2 8.5 L17.2 16 L9.2 23.5 L6.5 23.5 L14.5 16 Z"/>
+  <rect x="19" y="21" width="7.5" height="2.5" fill="#4ade80"/>
 </svg>

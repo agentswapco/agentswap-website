@@ -1,110 +1,92 @@
 {
   "name": "AgentSwap",
-  "description": "AI-agent-optimized DEX aggregator with native x402 payments. Sub-millisecond quotes across 36 DEXes on Ethereum, Base, and Arbitrum.",
-  "url": "https://agentswap.xyz",
+  "description": "Authorize agents to sign through your User Proxy. Trading input comes from your main wallet and proceeds return to it. Agent wallets hold no trading funds and need no gas balance for relayed execution.",
+  "url": "https://agentswap.co",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "https://agentswap.co/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
   ],
   "creator": {
     "name": "AgentSwap",
-    "url": "https://github.com/sunoj/smart-router"
+    "url": "https://github.com/agentswapco"
   },
   "agentType": "service",
-  "tags": ["defi", "router", "swap", "api", "x402", "mcp", "agent"],
-  "fees": [
-    {
-      "amount": "0.0001",
-      "currency": "USD",
-      "description": "Per quote request (payable via x402 USDC)"
-    }
-  ],
-  "inputs": [
-    {
-      "name": "quote_request",
-      "description": "chain_id, token_in, token_out, amount_in"
-    }
-  ],
-  "outputs": [
-    {
-      "name": "quote_response",
-      "description": "output amount, route path, ABI-encoded calldata, diagnostics"
-    }
+  "tags": [
+    "defi",
+    "swap",
+    "intents",
+    "api",
+    "mcp",
+    "agent"
   ],
   "capabilities": [
     {
-      "name": "quote",
-      "description": "Get best swap quote across all DEXes",
-      "endpoint": "/quote",
+      "name": "compare_quotes",
+      "description": "Compare aggregator routes; camelCase JSON and raw token amounts. Returns calldata without signing or broadcasting.",
+      "endpoint": "https://meta-api.agentswap.co/quote",
       "method": "POST"
     },
     {
-      "name": "x402_discovery",
-      "description": "x402 payment discovery — networks, pricing, facilitator",
-      "endpoint": "/.well-known/x402",
-      "method": "GET"
-    },
-    {
-      "name": "x402_verify",
-      "description": "Verify x402 payment signature (facilitator endpoint)",
-      "endpoint": "/x402/verify",
-      "method": "POST"
-    },
-    {
-      "name": "x402_settle",
-      "description": "Settle x402 payment on-chain (facilitator endpoint)",
-      "endpoint": "/x402/settle",
+      "name": "stream_quotes",
+      "description": "Exact-input comparison via server-sent events.",
+      "endpoint": "https://meta-api.agentswap.co/quote/stream",
       "method": "POST"
     },
     {
       "name": "health",
-      "description": "Service health: pools, sync status, memory",
-      "endpoint": "/health",
+      "description": "Meta-aggregator service health.",
+      "endpoint": "https://meta-api.agentswap.co/health",
+      "method": "GET"
+    },
+    {
+      "name": "chains",
+      "description": "Current Smart Router catalog coverage; separate from app and protocol coverage.",
+      "endpoint": "https://api.agentswap.co/api/chains",
       "method": "GET"
     },
     {
       "name": "tokens",
-      "description": "Token registry: address, symbol, decimals",
-      "endpoint": "/api/tokens",
+      "description": "Smart Router token catalog.",
+      "endpoint": "https://api.agentswap.co/api/tokens",
       "method": "GET"
     }
   ],
+  "links": {
+    "app": "https://app.agentswap.co",
+    "docs": "https://docs.agentswap.co/",
+    "api": "https://agentswap.co/docs/api",
+    "cli": "https://agentswap.co/docs/cli",
+    "protocol": "https://docs.agentswap.co/protocol/overview/",
+    "addresses": "https://docs.agentswap.co/reference/addresses/",
+    "source": "https://github.com/agentswapco/agentswap-cli",
+    "proxy": "https://docs.agentswap.co/proxy/overview/",
+    "agent_delegation": "https://docs.agentswap.co/proxy/agent-delegation/",
+    "research": "https://research.agentswap.co/",
+    "x": "https://x.com/agentswapco"
+  },
+  "mcp": {
+    "transport": "stdio",
+    "command": "agentswap",
+    "args": [
+      "mcp"
+    ]
+  },
   "restrictions": [
     {
-      "name": "payment",
-      "description": "x402 PAYMENT-SIGNATURE header or X-API-Key required for /quote"
-    }
-  ],
-  "version": "1.30.10",
-  "links": {
-    "docs": "/docs/api.html",
-    "cli": "/docs/cli.html",
-    "x402": "/.well-known/x402"
-  },
-  "x402Support": true,
-  "x402": {
-    "version": 2,
-    "discovery": "/.well-known/x402",
-    "facilitator": "/x402",
-    "networks": ["eip155:8453", "eip155:42161"],
-    "schemes": ["exact"],
-    "asset": "USDC"
-  },
-  "securitySchemes": [
-    {
-      "type": "x402",
-      "description": "x402 v2 payment protocol — sign EIP-3009 transferWithAuthorization"
+      "name": "execution",
+      "description": "CLI and MCP execution require --allow-trade and an active owner-granted policy. Set --max-amount in raw input units."
     },
     {
-      "type": "apiKey",
-      "name": "X-API-Key",
-      "in": "header",
-      "description": "Legacy API key auth (EIP-191 registration)"
+      "name": "smart_router_auth",
+      "description": "Smart Router quote requests require X-API-Key; CLI quote commands use Smart Router, not MAS."
+    },
+    {
+      "name": "relayed_execution",
+      "description": "Agents sign off-chain. Relayers and solvers submit transactions and pay gas. Self-submission requires the submitting wallet to pay gas."
     }
   ],
-  "supportedStandards": ["EIP-8004", "x402-v2", "EIP-3009", "EIP-712"],
   "registrations": []
 }
