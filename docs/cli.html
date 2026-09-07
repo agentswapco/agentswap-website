@@ -55,20 +55,21 @@ agentswap pricing</code></pre>
         </section>
         <section class="block mb-8" aria-labelledby="quote-title">
           <h2 class="block-title" id="quote-title">## Quote and inspect</h2>
-<pre><code><span class="comment"># Quote 1000000 raw USDC units (display equivalent: 1 USDC)</span>
-agentswap quote --chain base --from USDC --to WETH --amount raw:1000000
+<pre><code><span class="comment"># Quote 1000000 USDC base units (display equivalent: 1 USDC)</span>
+agentswap quote --chainid 8453 --from USDC --to WETH --amount 1000000
 
 <span class="comment"># JSON output and token discovery</span>
-agentswap --json tokens --chain base
-agentswap batch-quote --chain arbitrum --amount raw:1000000 USDC/WETH</code></pre>
-          <p>Use integer amounts in the token's smallest unit: wei for ETH, or the ERC-20's base units. CLI 0.3.0 requires the <code>raw:</code> prefix on quote amounts to prevent scaling. API <code>amountIn</code> and <code>--max-amount</code> take plain raw integer strings.</p>
+agentswap --json tokens --chainid 8453
+agentswap batch-quote --chainid 42161 --amount 1000000 USDC/WETH</code></pre>
+          <p>Select the chain with <code>--chainid</code> and a numeric chain ID: Base <code>8453</code>, Arbitrum <code>42161</code>, BNB Smart Chain <code>56</code>, Robinhood Chain <code>4663</code>, Ethereum <code>1</code>. Known aliases such as <code>base</code> still resolve.</p>
+          <p>Use integer amounts in the token's smallest unit: wei for ETH, or the ERC-20's base units. Every monetary input is an unsigned decimal integer with no <code>raw:</code> prefix, so one 6-decimal USDC is written <code>1000000</code>; a value that is not digits is refused before any quote or signature. API <code>amountIn</code> and <code>--max-amount</code> take plain raw integer strings.</p>
         </section>
         <section class="block mb-8" aria-labelledby="intent-title">
           <h2 class="block-title" id="intent-title">## Intents and agent permissions</h2>
 <pre><code><span class="comment"># Replace addresses and IDs with the values you want to inspect</span>
-agentswap intent list --chain base --owner 0xOwner
-agentswap intent status --chain base --id 0xIntentId
-agentswap policy --chain base --owner 0xOwner --agent 0xAgent</code></pre>
+agentswap intent list --chainid 8453 --owner 0xOwner
+agentswap intent status --chainid 8453 --id 0xIntentId
+agentswap policy --chainid 8453 --owner 0xOwner --agent 0xAgent</code></pre>
           <p><code>intent place</code> prepares a Dutch order. <code>trade</code> prepares a delegated market swap. Both require the appropriate owner-granted policy; execution is forced to dry-run without <code>--allow-trade</code>.</p>
           <p>With <code>--relay</code>, the agent signs using its own key and needs no trading funds or gas balance. Input comes from the owner's main wallet and proceeds return to it; relayers and solvers pay transaction gas. <code>--self-submit</code> requires gas in the submitting wallet.</p>
           <p>Dry-runs may sign locally but never relay or broadcast. They still need a reachable RPC and a deployed proxy for contract checks. Set <code>--max-amount</code> before enabling execution.</p>
