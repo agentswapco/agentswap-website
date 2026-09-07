@@ -178,8 +178,8 @@ CLI: cargo install agentswap
 MCP server: agentswap mcp
 Inspect policy before preparing a trade or intent.
 CLI guide: https://agentswap.co/docs/cli
-CLI quotes use Smart Router. For CLI 0.3.0 quote amounts,
-use raw: followed by the integer token base-unit amount.
+CLI quotes use Smart Router. Every amount is an integer in the
+token's smallest unit, and the chain is selected with --chainid.
 Policy guide: https://docs.agentswap.co/proxy/agent-delegation/
 Execution requires --allow-trade and an active owner-granted policy.
 Set --max-amount in raw input units before enabling execution.
