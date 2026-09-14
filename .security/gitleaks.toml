@@ -1,0 +1,18 @@
+# Keep provider rules from the pinned scanner and add domain-specific credential detection.
+# No repository-local ignore file or inline suppression bypasses this configuration.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "evm-private-key-assignment"
+description = "Assigned EVM private key"
+regex = '''(?i)(?:private[_-]?key|signer[_-]?key|wallet[_-]?key)\s*[=:]\s*["']?(0x[0-9a-f]{64})'''
+secretGroup = 1
+keywords = ["key"]
+
+[[rules]]
+id = "wallet-mnemonic-assignment"
+description = "Assigned wallet mnemonic"
+regex = '''(?i)(?:mnemonic|seed[_-]?phrase)\s*[=:]\s*["']([a-z]+(?:\s+[a-z]+){11,23})["']'''
+secretGroup = 1
+keywords = ["mnemonic", "phrase"]

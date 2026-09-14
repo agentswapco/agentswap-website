@@ -1,0 +1,13 @@
+[
+  {
+    "path": "docs/api.html",
+    "rule": "generic-api-key",
+    "lines": [
+      55
+    ],
+    "sha256": "95007d685e1fd9c459881231ae34f708b0ba93ac94f37d3d34924d308ccd3487",
+    "reason": "Reviewed public EVM token addresses in API documentation example. Exact artifact bytes only; changes require another review.",
+    "reviewed": "2026-09-14",
+    "findings": 1
+  }
+]
