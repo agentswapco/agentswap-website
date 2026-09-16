@@ -1,0 +1,10 @@
+<!--
+  AgentSwap solver avatar: yellow accent, double-chevron as path geometry.
+  Exports: Identity for solver / filler surfaces in the ecosystem.
+  Deps: Mark geometry; yellow (#facc15) from terminal.css.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#0c0c0c"/>
+  <path fill="#facc15" d="M4.5 8.5 L7.2 8.5 L15.2 16 L7.2 23.5 L4.5 23.5 L12.5 16 Z"/>
+  <path fill="#facc15" d="M13.5 8.5 L16.2 8.5 L24.2 16 L16.2 23.5 L13.5 23.5 L21.5 16 Z"/>
+</svg>

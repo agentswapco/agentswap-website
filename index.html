@@ -1,4 +1,4 @@
-<!-- AgentSwap landing page explaining User Proxy permissions and agent intents.
+<!-- Terminal-style AgentSwap homepage explaining User Proxy permissions and agent intents.
      Exports: product story, animated authorization walkthrough, developer entry points.
      Dependencies: shared styles, landing styles, and native JavaScript feature modules. -->
 <!doctype html>
@@ -36,7 +36,8 @@
   <main id="main" class="landing-main">
     <section class="landing-hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> AUTONOMY. WITH BOUNDARIES.</p>
+        <p class="eyebrow">agentswap / agent execution</p>
+        <p class="hero-brand">agentswap</p>
         <h1 id="hero-title" class="hero-statement">Your agent.<br><span>Your rules.</span></h1>
         <p class="hero-description"><strong>Your agent only signs.</strong><br>Trading funds leave and return to your main wallet. Your Proxy enforces the limits.</p>
         <p class="hero-signing">No agent deposits. No agent gas top-ups.</p>
@@ -48,36 +49,36 @@
       </div>
       <section class="scene-surface" id="scene-surface" data-motion="static" aria-labelledby="journey-title">
         <div class="journey-heading">
-          <p class="eyebrow">AN AGENT TRADE, STEP BY STEP</p>
-          <h2 id="journey-title">Your agent signs.<br>Your main wallet funds the trade.</h2>
+          <p class="eyebrow">01 / execution trace</p>
+          <h2 id="journey-title">An agent trade, step by step.</h2>
           <p class="journey-example">Example: swap 25 USDC from your main wallet for WETH.</p>
         </div>
         <ol class="journey" aria-label="From authorization to settlement">
           <li class="journey-row is-active" data-journey-row="0">
             <button class="journey-step" type="button" data-stage="0" aria-pressed="true">
-              <span class="journey-number" aria-hidden="true">01</span>
-              <span class="journey-content"><span class="journey-actor">YOUR MAIN WALLET</span><strong>Grant a bounded permission</strong><span class="journey-detail">USDC only · 100 USDC / day · no deposit to the agent</span></span>
+              <span class="journey-number" aria-hidden="true"><svg width="32" height="32"><use href="/brand/icons.svg#wallet"></use></svg></span>
+              <span class="journey-content"><span class="journey-actor">01 / YOUR MAIN WALLET</span><strong>Grant a bounded permission</strong><span class="journey-detail">USDC only · 100 USDC / day · no deposit to the agent</span></span>
             </button>
             <span class="journey-connector" aria-hidden="true">↓<i></i></span>
           </li>
           <li class="journey-row" data-journey-row="1">
             <button class="journey-step" type="button" data-stage="1" aria-pressed="false">
-              <span class="journey-number" aria-hidden="true">02</span>
-              <span class="journey-content"><span class="journey-actor">YOUR AGENT</span><strong>Sign an intent with its own key</strong><span class="journey-detail">Off-chain signature only · no funds or gas needed</span></span>
+              <span class="journey-number" aria-hidden="true"><img src="/brand/agent.svg" width="32" height="32" alt=""></span>
+              <span class="journey-content"><span class="journey-actor">02 / YOUR AGENT</span><strong>Sign an intent with its own key</strong><span class="journey-detail">Off-chain signature only · no funds or gas needed</span></span>
             </button>
             <span class="journey-connector" aria-hidden="true">↓<i></i></span>
           </li>
           <li class="journey-row" data-journey-row="2">
             <button class="journey-step" type="button" data-stage="2" aria-pressed="false">
-              <span class="journey-number" aria-hidden="true">03</span>
-              <span class="journey-content"><span class="journey-actor">YOUR USER PROXY · AT FILL TIME</span><strong>Check permission, then pull from your wallet</strong><span class="journey-detail">25 USDC from your main wallet · within your policy</span></span>
+              <span class="journey-number" aria-hidden="true"><svg width="32" height="32"><use href="/brand/icons.svg#permission"></use></svg></span>
+              <span class="journey-content"><span class="journey-actor">03 / YOUR USER PROXY · AT FILL TIME</span><strong>Check permission, then pull from your wallet</strong><span class="journey-detail">25 USDC from your main wallet · within your policy</span></span>
             </button>
             <span class="journey-connector" aria-hidden="true">↓<i></i></span>
           </li>
           <li class="journey-row" data-journey-row="3">
             <button class="journey-step" type="button" data-stage="3" aria-pressed="false">
-              <span class="journey-number" aria-hidden="true">04</span>
-              <span class="journey-content"><span class="journey-actor">SOLVER → YOUR MAIN WALLET</span><strong>Return the WETH to your main wallet</strong><span class="journey-detail">Solver pays fill gas · output floor enforced</span></span>
+              <span class="journey-number" aria-hidden="true"><img src="/brand/solver.svg" width="32" height="32" alt=""></span>
+              <span class="journey-content"><span class="journey-actor">04 / SOLVER → YOUR MAIN WALLET</span><strong>Return the WETH to your main wallet</strong><span class="journey-detail">Solver pays fill gas · output floor enforced</span></span>
             </button>
           </li>
         </ol>
@@ -91,11 +92,10 @@
         </div>
         <p class="journey-hint">Select a step to pause and explore.</p>
       </section>
-      <a class="hero-scroll" href="#how-it-works" aria-label="Explore how agent permissions work">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a>
     </section>
 
     <section id="how-it-works" class="flow-section section-wrap" aria-labelledby="flow-title">
-      <div class="section-intro"><p class="eyebrow">FROM PERMISSION TO EXECUTION</p><h2 id="flow-title">A little permission.<br>A lot of possibility.</h2></div>
+      <div class="section-intro"><p class="eyebrow">02 / how it works</p><h2 id="flow-title"><span aria-hidden="true">## </span>From permission to execution</h2></div>
       <div class="flow-controls" role="group" aria-label="Explore execution stages">
         <button type="button" data-stage="0" aria-pressed="true"><span>01</span> Authorize <span class="flow-arrow" aria-hidden="true">↗</span></button>
         <button type="button" data-stage="1" aria-pressed="false"><span>02</span> Sign intent <span class="flow-arrow" aria-hidden="true">↗</span></button>
@@ -112,8 +112,8 @@
 
     <section class="permission-section section-wrap" aria-labelledby="permission-title">
       <div class="permission-copy">
-        <p class="eyebrow">THE USER PROXY</p>
-        <h2 id="permission-title">Built around<br><span>your boundaries.</span></h2>
+        <p class="eyebrow">03 / user proxy</p>
+        <h2 id="permission-title"><span aria-hidden="true">## </span>Your agent's boundaries</h2>
         <p>Your main wallet owns the Proxy and holds the trading funds until execution. The Proxy pulls only the authorized input and returns proceeds to your main wallet. Your agent wallet holds no trading funds.</p>
         <a class="inline-link" href="https://docs.agentswap.co/proxy/overview/">Meet your User Proxy <span aria-hidden="true">↗</span></a>
       </div>
@@ -125,19 +125,19 @@
     </section>
 
     <section class="execution-section section-wrap" aria-labelledby="execution-title">
-      <p class="eyebrow">WHAT YOUR AGENT CAN DO</p>
-      <h2 id="execution-title">Permission becomes action.</h2>
+      <p class="eyebrow">04 / execution</p>
+      <h2 id="execution-title"><span aria-hidden="true">## </span>Swaps and intents</h2>
       <div class="execution-columns">
-        <article><span class="text-mark" aria-hidden="true">[ ↔ ]</span><h3>Find a route. Make a swap.</h3><p>Compare aggregator routes, simulated output, and gas estimates. Execute through your proxy with a minimum-output guard.</p><a class="inline-link" href="/docs/api">Explore routing <span aria-hidden="true">↗</span></a></article>
-        <article><span class="text-mark" aria-hidden="true">[ ≋ ]</span><h3>Set the terms. Let solvers fill.</h3><p>An authorized agent places a Dutch intent with an exact input, an output floor, and a deadline. Solvers find an execution that meets its terms.</p><a class="inline-link" href="https://docs.agentswap.co/protocol/overview/">Explore intents <span aria-hidden="true">↗</span></a></article>
+        <article><svg class="text-mark" width="32" height="32" aria-hidden="true"><use href="/brand/icons.svg#swap"></use></svg><h3>Find a route. Make a swap.</h3><p>Compare aggregator routes, simulated output, and gas estimates. Execute through your proxy with a minimum-output guard.</p><a class="inline-link" href="/docs/api">Explore routing <span aria-hidden="true">↗</span></a></article>
+        <article><svg class="text-mark" width="32" height="32" aria-hidden="true"><use href="/brand/icons.svg#intent"></use></svg><h3>Set the terms. Let solvers fill.</h3><p>An authorized agent places a Dutch intent with an exact input, an output floor, and a deadline. Solvers find an execution that meets its terms.</p><a class="inline-link" href="https://docs.agentswap.co/protocol/overview/">Explore intents <span aria-hidden="true">↗</span></a></article>
       </div>
       <p class="coverage-line">INTENT &amp; PROXY DEPLOYMENTS <span>Base · Arbitrum · BNB Smart Chain · Robinhood Chain</span><a href="/docs/chains">Coverage ↗</a></p>
     </section>
 
     <section id="developers" class="developer-section section-wrap" aria-labelledby="developer-title">
-      <div class="developer-copy"><p class="eyebrow">BUILT TO BE CALLED</p><h2 id="developer-title">An interface<br>for your agent.</h2><p>Inspect permissions, prepare trades, and track intents from a terminal or an MCP client.</p><div class="developer-links"><a href="/docs/cli">CLI &amp; MCP ↗</a><a href="/docs/api">API guide ↗</a><a href="https://docs.agentswap.co/">Protocol docs ↗</a></div></div>
+      <div class="developer-copy"><p class="eyebrow">05 / developers</p><h2 id="developer-title"><span aria-hidden="true">## </span>Connect your agent</h2><p>Inspect permissions, prepare trades, and track intents from a terminal or an MCP client.</p><div class="developer-links"><a href="/docs/cli">CLI &amp; MCP ↗</a><a href="/docs/api">API guide ↗</a><a href="https://docs.agentswap.co/">Protocol docs ↗</a></div></div>
       <div class="terminal">
-        <div class="terminal-bar"><span><i></i><i></i><i></i></span> agentswap / get started</div>
+        <div class="terminal-bar">agentswap / get started</div>
 <pre><code><span class="comment"># Install</span>
 <span class="terminal-prompt">$</span> curl -fsSL https://agentswap.co/install.sh | sh
 <span class="terminal-prompt">$</span> cargo install agentswap
@@ -190,11 +190,11 @@ Deployments: https://docs.agentswap.co/reference/addresses/</pre>
       </details>
     </section>
     <section class="closing-section section-wrap" aria-labelledby="closing-title">
-      <p class="eyebrow">YOUR PROXY. YOUR AGENT. YOUR RULES.</p>
-      <h2 id="closing-title">Let your agent<br><span>get to work.</span></h2>
+      <p class="eyebrow">06 / get started</p>
+      <h2 id="closing-title">Let your agent get to work.</h2>
       <a class="button-primary" href="https://app.agentswap.co/agents">Set up agent access <span aria-hidden="true">↗</span></a>
     </section>
   </main>
-  <footer class="landing-footer section-wrap"><a class="wordmark" href="/"><img src="/brand/mark.svg" width="32" height="32" alt=""> <span>AgentSwap</span></a><p>Autonomy, with boundaries.</p><div><a href="https://docs.agentswap.co/reference/addresses/">Contracts ↗</a><a href="https://docs.agentswap.co/whitepaper/">Whitepaper ↗</a><a href="https://github.com/agentswapco/agentswap-cli">GitHub ↗</a><a href="https://research.agentswap.co/">Research ↗</a><a href="https://x.com/agentswapco" aria-label="AgentSwap on X">X ↗</a></div></footer>
+  <footer class="landing-footer section-wrap"><a class="wordmark" href="/"><img src="/brand/mark.svg" width="32" height="32" alt=""> <span>AgentSwap</span></a><p>Autonomy, with boundaries.</p><div><a href="https://docs.agentswap.co/reference/addresses/">Contracts ↗</a><a href="https://docs.agentswap.co/whitepaper/">Whitepaper ↗</a><a href="https://github.com/agentswapco/agentswap-cli">GitHub ↗</a><a href="https://research.agentswap.co/">Research ↗</a><a href="https://x.com/agentswapco" aria-label="AgentSwap on X">X ↗</a></div><p class="footer-legal">MEET SOFTWARE CO., LTD.</p></footer>
 </body>
 </html>
